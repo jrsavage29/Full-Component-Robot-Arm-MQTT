@@ -78,7 +78,6 @@ int setPWM_Base(int angle_Base)
     static int target_angle;
     target_angle = 11*angle_Base + DEFAULT_BASE_DUTY_CYCLE;
 
-    //A pulse width of 1500 us moves the servo to angle 0
     if(target_angle != dutyCycle_Base)
     {
         if(angle_Base > 180 || angle_Base < 0)

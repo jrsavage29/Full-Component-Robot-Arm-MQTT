@@ -16,13 +16,13 @@
 //The following defines are based on the specs of the MG90 servos pulse width and pulse cycle
 #define PWM_PERIOD                  20000   //20 ms or 20000 us
 #define DEFAULT_BASE_DUTY_CYCLE     200 //1.15 us = 90, 2.66 us = 0, 0.4 us = 180
-#define DEFAULT_EXTEND_DUTY_CYCLE   600 // 1.15 us = Min, 2.5 us = Max
-#define DEFAULT_LIFT_DUTY_CYCLE     1700 // 0.5 us = Min, 2000 us = Max
+#define DEFAULT_EXTEND_DUTY_CYCLE   700 // 1.15 us = Min, 2.5 us = Max
+#define DEFAULT_LIFT_DUTY_CYCLE     1500 // 0.5 us = Min, 2000 us = Max
 #define DEFAULT_CLAW_DUTY_CYCLE     400 //  0.4 us = Min Closed, 2 us = Max Open
 
 #define INITIAL_BASE_DUTY_CYCLE     1190
-#define INITIAL_EXTEND_DUTY_CYCLE   600
-#define INITIAL_LIFT_DUTY_CYCLE     1700
+#define INITIAL_EXTEND_DUTY_CYCLE   700
+#define INITIAL_LIFT_DUTY_CYCLE     1500 //1700
 #define INITIAL_CLAW_DUTY_CYCLE     400
 
 #define CONTINUING_CONFIG   -5

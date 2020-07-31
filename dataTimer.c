@@ -64,7 +64,7 @@ void formatDataForQueue()
 //        snprintf(jsonObject, BUFFER_SIZE, "{\"Sequence Number\":\"%d\", \"Arm Status\":\"%s\", \"Topic\":\"%s\"}", sequenceNumber, arm_status, topic_name);
 
         char* topic_name = "Summer/Testing/Signal";
-        snprintf(jsonObject, BUFFER_SIZE, "{\"Sequence Number\":\"%d\", \"Rover Status\":\"%s\", \"Topic\":\"%s\"}", sequenceNumber, rover_status, topic_name);
+        snprintf(jsonObject, BUFFER_SIZE, "{\"Topic\":\"%s\", \"Sequence Number\":\"%d\", \"Rover Status\":\"%s\"}", topic_name, sequenceNumber, rover_status );
         queueElement.msgPtr = jsonObject;
         sequenceNumber++;
 

@@ -22,7 +22,6 @@ C_SRCS += \
 ../message_queue.c \
 ../mqtt_client_app.c \
 ../network_if.c \
-../robot_arm_fsm.c \
 ../servo_PWM.c \
 ../softwareTimer.c \
 ../uart_term.c 
@@ -46,7 +45,6 @@ C_DEPS += \
 ./message_queue.d \
 ./mqtt_client_app.d \
 ./network_if.d \
-./robot_arm_fsm.d \
 ./servo_PWM.d \
 ./softwareTimer.d \
 ./uart_term.d 
@@ -62,7 +60,6 @@ OBJS += \
 ./message_queue.obj \
 ./mqtt_client_app.obj \
 ./network_if.obj \
-./robot_arm_fsm.obj \
 ./servo_PWM.obj \
 ./softwareTimer.obj \
 ./uart_term.obj 
@@ -85,7 +82,6 @@ OBJS__QUOTED += \
 "message_queue.obj" \
 "mqtt_client_app.obj" \
 "network_if.obj" \
-"robot_arm_fsm.obj" \
 "servo_PWM.obj" \
 "softwareTimer.obj" \
 "uart_term.obj" 
@@ -105,7 +101,6 @@ C_DEPS__QUOTED += \
 "message_queue.d" \
 "mqtt_client_app.d" \
 "network_if.d" \
-"robot_arm_fsm.d" \
 "servo_PWM.d" \
 "softwareTimer.d" \
 "uart_term.d" 
@@ -126,7 +121,6 @@ C_SRCS__QUOTED += \
 "../message_queue.c" \
 "../mqtt_client_app.c" \
 "../network_if.c" \
-"../robot_arm_fsm.c" \
 "../servo_PWM.c" \
 "../softwareTimer.c" \
 "../uart_term.c" 

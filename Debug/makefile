@@ -20,7 +20,6 @@ ORDERED_OBJS += \
 "./message_queue.obj" \
 "./mqtt_client_app.obj" \
 "./network_if.obj" \
-"./robot_arm_fsm.obj" \
 "./servo_PWM.obj" \
 "./softwareTimer.obj" \
 "./uart_term.obj" \
@@ -183,8 +182,8 @@ Full_Component_MQTT.hex: $(EXE_OUTPUTS)
 # Other Targets
 clean:
 	-$(RM) $(GEN_MISC_FILES__QUOTED)$(BIN_OUTPUTS__QUOTED)$(GEN_FILES__QUOTED)$(EXE_OUTPUTS__QUOTED)
-	-$(RM) "client_cbs.obj" "syscfg\ti_net_config.obj" "syscfg\ti_drivers_net_wifi_config.obj" "syscfg\ti_drivers_config.obj" "dataTimer.obj" "debugIntercomponent.obj" "main_freertos.obj" "message_queue.obj" "mqtt_client_app.obj" "network_if.obj" "robot_arm_fsm.obj" "servo_PWM.obj" "softwareTimer.obj" "uart_term.obj" 
-	-$(RM) "client_cbs.d" "syscfg\ti_net_config.d" "syscfg\ti_drivers_net_wifi_config.d" "syscfg\ti_drivers_config.d" "dataTimer.d" "debugIntercomponent.d" "main_freertos.d" "message_queue.d" "mqtt_client_app.d" "network_if.d" "robot_arm_fsm.d" "servo_PWM.d" "softwareTimer.d" "uart_term.d" 
+	-$(RM) "client_cbs.obj" "syscfg\ti_net_config.obj" "syscfg\ti_drivers_net_wifi_config.obj" "syscfg\ti_drivers_config.obj" "dataTimer.obj" "debugIntercomponent.obj" "main_freertos.obj" "message_queue.obj" "mqtt_client_app.obj" "network_if.obj" "servo_PWM.obj" "softwareTimer.obj" "uart_term.obj" 
+	-$(RM) "client_cbs.d" "syscfg\ti_net_config.d" "syscfg\ti_drivers_net_wifi_config.d" "syscfg\ti_drivers_config.d" "dataTimer.d" "debugIntercomponent.d" "main_freertos.d" "message_queue.d" "mqtt_client_app.d" "network_if.d" "servo_PWM.d" "softwareTimer.d" "uart_term.d" 
 	-$(RMDIR) $(GEN_MISC_DIRS__QUOTED)
 	-@echo 'Finished clean'
 	-@echo ' '

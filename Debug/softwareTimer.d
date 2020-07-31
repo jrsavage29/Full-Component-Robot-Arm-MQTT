@@ -36,6 +36,8 @@ softwareTimer.obj: C:/Users/jrsav/workspace_v10/Full_Component_MQTT/servo_PWM.h
 softwareTimer.obj: C:/Users/jrsav/workspace_v10/Full_Component_MQTT/message_queue.h
 softwareTimer.obj: C:/ti/simplelink_cc32xx_sdk_4_10_00_07/source/ti/drivers/PWM.h
 softwareTimer.obj: C:/FreeRTOSv10.3.1/FreeRTOS/Source/include/timers.h
+softwareTimer.obj: C:/Users/jrsav/workspace_v10/Full_Component_MQTT/debugIntercomponent.h
+softwareTimer.obj: C:/ti/simplelink_cc32xx_sdk_4_10_00_07/source/ti/drivers/UART.h
 
 ../softwareTimer.c: 
 C:/Users/jrsav/workspace_v10/Full_Component_MQTT/softwareTimer.h: 
@@ -73,3 +75,5 @@ C:/Users/jrsav/workspace_v10/Full_Component_MQTT/servo_PWM.h:
 C:/Users/jrsav/workspace_v10/Full_Component_MQTT/message_queue.h: 
 C:/ti/simplelink_cc32xx_sdk_4_10_00_07/source/ti/drivers/PWM.h: 
 C:/FreeRTOSv10.3.1/FreeRTOS/Source/include/timers.h: 
+C:/Users/jrsav/workspace_v10/Full_Component_MQTT/debugIntercomponent.h: 
+C:/ti/simplelink_cc32xx_sdk_4_10_00_07/source/ti/drivers/UART.h: 

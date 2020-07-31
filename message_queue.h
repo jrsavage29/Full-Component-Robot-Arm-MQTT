@@ -48,7 +48,7 @@
         //These will probably only be hard coded in for the complex angles. (Extend is based off how far away the rover is from the object)
         int angle_Extend, angle_Lift, angle_Claw;
         int timer_expired;
-
+        char* rover_Status;
 
 
 

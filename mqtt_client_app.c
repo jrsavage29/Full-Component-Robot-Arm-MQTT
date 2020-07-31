@@ -93,7 +93,6 @@
 #include "debugIntercomponent.h"
 #include <jsmn.h>
 #include <message_queue.h>
-#include <robot_arm_fsm.h>
 #include <softwareTimer.h>
 #include <servo_PWM.h>
 
@@ -201,9 +200,9 @@ void * MqttClient(void *pvParameters);
 void * ReceiveClient(void *pvParameters);
 void *robotArmThread(void *pvParameters);
 void *readDataThread(void *pvParameters);
-void readFromMQTT(char* position, char* color, char* rover_status);
-void pickUp();
-void dropOff();
+//void readFromMQTT(char* position, char* color, char* rover_status);
+void pickUp(Motor_Angles data, int * robot_arm_status);
+void dropOff(int * robot_arm_status, char* object_color);
 void Mqtt_ClientStop(uint8_t disconnect);
 void Mqtt_ServerStop();
 void Mqtt_Stop();
@@ -568,7 +567,7 @@ void * ReceiveClient(void *pvParameters)
             jsmn_init(&p);
             jsmn_parse(&p, tmpBuff, strlen(tmpBuff), tokens, 25);
 
-            jsmntok_t key = tokens[3];
+            jsmntok_t key = tokens[5];
             unsigned int length = key.end - key.start;
             char keyString[length + 1];
             memcpy(keyString, &tmpBuff[key.start], length);
@@ -580,7 +579,7 @@ void * ReceiveClient(void *pvParameters)
 
             if( strcmp(keyStringTemp, "Rover Status") == 0 )
             {
-                jsmntok_t keyR = tokens[4];
+                jsmntok_t keyR = tokens[6];
                 unsigned int lengthR = keyR.end - keyR.start;
                 char keyStringR[length + 1];
                 memcpy(keyStringR, &tmpBuff[keyR.start], lengthR);
@@ -597,7 +596,7 @@ void * ReceiveClient(void *pvParameters)
                 //color = "DARK";
                 //position = "180";
 
-                jsmntok_t keyC = tokens[4];
+                jsmntok_t keyC = tokens[6];
                 unsigned int lengthC = keyC.end - keyC.start;
                 char keyStringC[lengthC + 1];
                 memcpy(keyStringC, &tmpBuff[keyC.start], lengthC);
@@ -608,7 +607,7 @@ void * ReceiveClient(void *pvParameters)
                 color = keyStringC;
 
 
-                keyC = tokens[6];
+                keyC = tokens[8];
                 lengthC = keyC.end - keyC.start;
                 memcpy(keyStringC, &tmpBuff[keyC.start], lengthC);
                 keyStringC[lengthC] = '\0';
@@ -638,14 +637,67 @@ void *robotArmThread(void *pvParameters)
 {
     dbgOutputLoc(DBG_MAINTHREAD_ENTER);
     Motor_Angles data;
-    //static int firstRun = TRUE_VAL;
-    //static int firstRead = TRUE_VAL;
+    static int robot_arm_status = PICK_UP_MODE;
+    static int valid_color = FALSE_VAL;
+    static int initial_check = TRUE_VAL;
+    static char* rover_status;
+    static char* object_color;
 
     while(1)
     {
         dbgOutputLoc(DBG_MAINTHREAD_READ_DATA);
         readDataReadQueueBlocking(&data);
 
+
+        //if( strcmp(data.rover_Status, "STOPPED") == 0 || data.timer_expired == TRUE_VAL)
+        //{
+        if(initial_check == TRUE_VAL) //Check if we initially receive a valid color
+        {
+            initial_check = FALSE_VAL;
+            rover_status = data.rover_Status;
+
+            if( ( strcmp(data.object_color, "LIGHT") == 0 || strcmp(data.object_color, "DARK") == 0 ) && robot_arm_status == PICK_UP_MODE)
+            {
+                object_color = data.object_color;
+                valid_color = TRUE_VAL;
+            }
+
+            else if( !(strcmp(data.object_color, "LIGHT") == 0 || strcmp(data.object_color, "DARK") == 0) )
+            {
+                valid_color = FALSE_VAL;
+            }
+        }
+
+        if(valid_color == TRUE_VAL && strcmp(rover_status, "STOPPED") == 0)
+        {
+            if( robot_arm_status == PICK_UP_MODE )
+            {
+                //data.timer_expired = TRUE_VAL;
+                pickUp(data, &robot_arm_status);
+
+                if(robot_arm_status == DROP_OFF_MODE)
+                {
+                    initial_check = TRUE_VAL;
+                }
+
+            }
+
+            else if( robot_arm_status == DROP_OFF_MODE )
+            {
+                dropOff(&robot_arm_status, object_color);
+
+                if(robot_arm_status == PICK_UP_MODE)
+                {
+                    initial_check = TRUE_VAL;
+                }
+            }
+        }
+
+        else if( strcmp(rover_status, "MOVING") == 0 )
+        {
+            initial_check = TRUE_VAL;
+        }
+        //}
         //UART_PRINT("Received Data!");
 
         dbgOutputLoc(DBG_MAINTHREAD_EXIT);
@@ -663,6 +715,7 @@ void *readDataThread(void *pvParameters)
     dbgOutputLoc(DBG_READTHREAD_ENTER);
     Task_Status status;
     Motor_Angles sending_data;
+    static int sent = false;
     //status.arm_status = IDLE_MODE;
     //setStatusofConfiguration(status);
 
@@ -675,48 +728,499 @@ void *readDataThread(void *pvParameters)
 
         //If the rover has stopped moving, we should send the data being seen by the camera
         //to the robot arm control thread so it can pick up
-        if( strcmp(status.rover_Status, "STOPPED") == 0 )
+        /*if( strcmp(status.rover_Status, "STOPPED") == 0 && sent == false)
         {
             //UART_PRINT("SENDING DATA! \r\n");
             sending_data.object_color = status.color;
             sending_data.angle_Base = atoi(status.position);
-            sending_data.timer_expired = TRUE_VAL;
+            sending_data.timer_expired = true;
 
             dbgOutputLoc(DBG_READTHREAD_SEND_DATA);
             sendToReadDataQueue(sending_data);
+            sent = true;
         }
 
-//        sending_data.object_color = status.color;
-//        sending_data.angle_Base = atoi(status.position);
-//        sending_data.timer_expired = TRUE_VAL;
-//
-//        dbgOutputLoc(DBG_READTHREAD_SEND_DATA);
-//        sendToReadDataQueue(sending_data);
+        else if(strcmp(status.rover_Status, "MOVING") == 0 && sent == true)
+        {
+            sent = false;
+        }*/
+
+        sending_data.object_color = status.color;
+        sending_data.angle_Base = atoi(status.position);
+        sending_data.rover_Status = status.rover_Status;
+        //sending_data.timer_expired = TRUE_VAL;
+
+        dbgOutputLoc(DBG_READTHREAD_SEND_DATA);
+        sendToReadDataQueue(sending_data);
 
         dbgOutputLoc(DBG_READTHREAD_EXIT);
     }
 
 }
 
-void readFromMQTT(char* position, char* color, char* rover_status)
+//void readFromMQTT(char* position, char* color, char* rover_status)
+//{
+//    Task_Status    data;
+//
+//    data.color = color;
+//    data.position = position;
+//    data.rover_Status = rover_status;
+//
+//    setStatusofConfiguration(data);
+//}
+
+void pickUp(Motor_Angles data, int * robot_arm_status)
 {
-    Task_Status    data;
+    static int firstRead = TRUE_VAL;
+    static int firstRun = TRUE_VAL;
+    static int servo_config = TRUE_VAL;
+    static int claw_pickup = FALSE_VAL;
+    static int post_claw_pickup = FALSE_VAL;
+    static int holding_mode = FALSE_VAL;
 
-    data.color = color;
-    data.position = position;
-    data.rover_Status = rover_status;
+    static int status0;
+    static int status1;
+    static int status2;
+    static int status3;
 
-    setStatusofConfiguration(data);
+    static int baseAngle;
+    static int extendAngle;
+    static int liftAngle;
+    static int clawAngle;
+
+    dbgOutputLoc(DBG_PICKUP_ENTER);
+
+    if(checkIfTimerActive() == pdFALSE)
+    {
+        //printString("TIMMMMMMMMMERRRRRRRRRRRRRRRRRRRRRRRRRRR EXXXXXXXXPPPPPPPIRRRRRRRRRRRRRREEEEEEEEDDDDDDDDDDDDD PPPPIICCCCCCCCCCCKKKKKKKUUUUUPPPPPPP!!!!!!!!!!!!!!");
+        if(firstRead == TRUE_VAL)
+        {
+            //Read the angles once for servo configuration
+
+            //dbgOutputLoc(DBG_MAINTHREAD_READ_ANGLES);
+            baseAngle = data.angle_Base;
+            extendAngle = 50; //Might need to change to be read in from the camera
+            liftAngle = 0;
+            clawAngle = 60;
+
+            firstRead = FALSE_VAL;
+            firstRun = TRUE_VAL;
+
+            servo_config = TRUE_VAL;
+            claw_pickup = FALSE_VAL;
+            post_claw_pickup = FALSE_VAL;
+            holding_mode = FALSE_VAL;
+
+            status0 = CONTINUING_CONFIG;
+            status1 = CONTINUING_CONFIG;
+            status2 = CONTINUING_CONFIG;
+            status3 = CONTINUING_CONFIG;
+        }
+
+        //increment/ decrement the duty cycle/ degree of the pwm by 1
+        //PWM formulas for each motor will return a completion status on it's progress to configuration.
+        status0 = setPWM_Base(baseAngle);
+        //dbgOutputLoc(DBG_SUBROUTINE_PWM_EXIT_BASE);
+
+        status2 = setPWM_Lift(liftAngle);
+        //dbgOutputLoc(DBG_SUBROUTINE_PWM_EXIT_LIFT);
+
+        status1 = setPWM_Extend(extendAngle);
+        //dbgOutputLoc(DBG_SUBROUTINE_PWM_EXIT_EXTEND);
+
+        status3 = setPWM_Claw(clawAngle);
+        //dbgOutputLoc(DBG_SUBROUTINE_PWM_EXIT_CLAW);
+
+
+        if(servo_config == TRUE_VAL && claw_pickup == FALSE_VAL && post_claw_pickup == FALSE_VAL && holding_mode == FALSE_VAL)
+        {
+            dbgOutputLoc(DBG_PICKUP_SERVO_CONFIG_ENTER);
+            //Now that all the configurations are done, we should use the claw to
+            //pick up the object
+            if(status0 == CONFIG_COMPLETE && status1 == CONFIG_COMPLETE && status2 == CONFIG_COMPLETE && status3 == CONFIG_COMPLETE)
+            {
+                //printString("MOVINNNNNNNNNNNNNGGGGGG TOOOOOOOO CLAWWWWWWW PPPIIIICCCCCCCCCCKKKKKUUUUPPPPPPPPP!!!!");
+                dbgOutputLoc(DBG_PICKUP_SERVO_CONFIG_EXIT);
+
+                servo_config = FALSE_VAL;
+                claw_pickup = TRUE_VAL;
+
+                status0 = CONTINUING_CONFIG;
+                status1 = CONTINUING_CONFIG;
+                status2 = CONTINUING_CONFIG;
+                status3 = CONTINUING_CONFIG;
+            }
+
+            //We must continue to increment the PWMs
+            firstRun = TRUE_VAL;
+            firstRead = FALSE_VAL;
+        }
+
+        else if(servo_config == FALSE_VAL && claw_pickup == TRUE_VAL && post_claw_pickup == FALSE_VAL && holding_mode == FALSE_VAL)
+        {
+            dbgOutputLoc(DBG_PICKUP_CLAW_PICKUP_ENTER);
+
+            static bool temp = false;
+            if(temp == false)
+            {
+                status0 = CONTINUING_CONFIG;
+                status1 = CONTINUING_CONFIG;
+                status2 = CONTINUING_CONFIG;
+                status3 = CONTINUING_CONFIG;
+                temp = true;
+            }
+            extendAngle = 120;
+
+            if(status0 == CONFIG_COMPLETE && status1 == CONFIG_COMPLETE && status2 == CONFIG_COMPLETE && status3 == CONFIG_COMPLETE)
+            {
+                //printString("MOVINNNNNNNNNNNNNGGGGGG TOOOOOOOO HHHHHOOOOOOOOOOOOOOOOOOLLLLLLLLLLDDDDDDDIIIINNNNGGGGGGGG!!!!");
+
+                dbgOutputLoc(DBG_PICKUP_CLAW_PICKUP_EXIT);
+
+                claw_pickup = FALSE_VAL;
+                post_claw_pickup = TRUE_VAL;
+
+                temp = false;
+
+                status0 = CONTINUING_CONFIG;
+                status1 = CONTINUING_CONFIG;
+                status2 = CONTINUING_CONFIG;
+                status3 = CONTINUING_CONFIG;
+            }
+
+            //We must continue to increment the PWMs
+            firstRun = TRUE_VAL;
+            firstRead = FALSE_VAL;
+        }
+
+        else if(servo_config == FALSE_VAL && claw_pickup == FALSE_VAL && post_claw_pickup == TRUE_VAL && holding_mode == FALSE_VAL)
+        {
+            static bool temp = false;
+            if(temp == false)
+            {
+                status0 = CONTINUING_CONFIG;
+                status1 = CONTINUING_CONFIG;
+                status2 = CONTINUING_CONFIG;
+                status3 = CONTINUING_CONFIG;
+                temp = true;
+            }
+
+            clawAngle = 0;
+            //extendAngle = 50;
+
+            if(status0 == CONFIG_COMPLETE && status1 == CONFIG_COMPLETE && status2 == CONFIG_COMPLETE && status3 == CONFIG_COMPLETE)
+            {
+                //printString("GGGGGGGGOOOOOOOOOIIIIIIIIIIIINNNNNGGGGGGGG TTTOOOOOOOO IIIIIIIIIIDDDDDDDDDDDDLLLLLLLLLLLEEEEEEEEE");
+
+
+                post_claw_pickup = FALSE_VAL;
+                holding_mode = TRUE_VAL;
+
+                temp = false;
+
+                status0 = CONTINUING_CONFIG;
+                status1 = CONTINUING_CONFIG;
+                status2 = CONTINUING_CONFIG;
+                status3 = CONTINUING_CONFIG;
+            }
+
+            //We must continue to increment the PWMs
+            firstRun = TRUE_VAL;
+            firstRead = FALSE_VAL;
+        }
+
+        else if(servo_config == FALSE_VAL && claw_pickup == FALSE_VAL && post_claw_pickup == FALSE_VAL && holding_mode == TRUE_VAL)
+        {
+            static bool temp = false;
+            if(temp == false)
+            {
+                status0 = CONTINUING_CONFIG;
+                status1 = CONTINUING_CONFIG;
+                status2 = CONTINUING_CONFIG;
+                status3 = CONTINUING_CONFIG;
+                temp = true;
+            }
+
+            dbgOutputLoc(DBG_PICKUP_HOLDING_MODE_ENTER);
+            //baseAngle = 90;
+            extendAngle = 50;
+            //liftAngle = 40;
+
+            //We're done configuring the PWMs if this if statement is true
+            if(status0 == CONFIG_COMPLETE && status1 == CONFIG_COMPLETE && status2 == CONFIG_COMPLETE && status3 == CONFIG_COMPLETE)
+            {
+                dbgOutputLoc(DBG_PICKUP_HOLDING_MODE_EXIT);
+
+    //            if( strcmp(data.object_color, "DARK") != 0  && strcmp(data.object_color, "LIGHT") != 0 )
+    //            {
+    //                //This means we successfully picked up the object out of the camera's way
+    //                firstRun = FALSE_VAL;
+    //                firstRead = TRUE_VAL;
+    //                *robot_arm_status = DROP_OFF_MODE;
+    //            }
+    //
+    //            else //If we failed to pick up the object and the camera still sees it
+    //            {
+    //                servo_config = TRUE_VAL;
+    //                claw_pickup = FALSE_VAL;
+    //                holding_mode = FALSE_VAL;
+    //
+    //                status0 = CONTINUING_CONFIG;
+    //                status1 = CONTINUING_CONFIG;
+    //                status2 = CONTINUING_CONFIG;
+    //                status3 = CONTINUING_CONFIG;
+    //
+    //                firstRun = FALSE_VAL;
+    //                firstRead = TRUE_VAL;
+    //                *robot_arm_status = PICK_UP_MODE;
+    //            }
+                //printString("REAAAAAAAAAAAAAAAAADDDDDDDDDDDDDDDDDDDDYYYYYYYYYYYYYYYY FFFFFFOOOOOOOORRRRRRRRRR DDDDDDDRRRRRRRRRRROOOOOOOOPPPPPPPPPPPPPPOOOOOOOFFFFFFFFFFF!!!!");
+                temp = false;
+                firstRun = FALSE_VAL;
+                firstRead = TRUE_VAL;
+                *robot_arm_status = DROP_OFF_MODE; //We will let the robot arm thread know
+                //It is ready for DROP_OFF_MODE Next time it stops.
+
+                //We should publish to the server that it's okay for the rover to start moving
+
+            }
+
+            else
+            {
+                //We must continue to increment the PWMs
+                firstRun = TRUE_VAL;
+                firstRead = FALSE_VAL;
+            }
+        }
+
+        if(firstRun == TRUE_VAL)
+        {
+            startSoftwareTimer();
+        }
+    }
+
+    dbgOutputLoc(DBG_PICKUP_EXIT);
 }
 
-void pickUp()
+void dropOff(int * robot_arm_status, char* object_color)
 {
+    static int firstRead = TRUE_VAL;
+    static int firstRun = TRUE_VAL;
+    static int setup_dropoff = TRUE_VAL;
+    static int claw_dropoff = FALSE_VAL;
+    static int post_claw_dropoff = FALSE_VAL;
+    static int idle_mode = FALSE_VAL;
 
-}
+    static int status0 = CONTINUING_CONFIG;
+    static int status1 = CONTINUING_CONFIG;
+    static int status2 = CONTINUING_CONFIG;
+    static int status3 = CONTINUING_CONFIG;
 
-void dropOff()
-{
+    static int baseAngle;
+    static int extendAngle;
+    static int liftAngle;
+    static int clawAngle;
 
+    dbgOutputLoc(DBG_DROPOFF_ENTER);
+    if(checkIfTimerActive() == pdFALSE)
+    {
+        //printString("TTTTTTTTTTIIIIIIIIIIMMMMMMMMMEEEEEEEERRRRRRRRRRRR EEEEEEEEEXXXXXPPPPPPPPPPPPIIIIIIRRRRRRREEEEEEEEEDDDDDDDDD DDDDRRRRRRRRRRRROOOPPPPPPPPPOOOOFFFFFFFFFFFFF!!!");
+        if(firstRead == TRUE_VAL)
+        {
+            if(strcmp(object_color, "DARK") == 0)
+            {
+                baseAngle = 0; //Deposit dark object to the bin on the right
+            }
+
+            else if(strcmp(object_color, "LIGHT") == 0)
+            {
+                baseAngle = 170; // Deposit light object to the bin on the left
+            }
+
+            extendAngle = 50; //Might need to change to be read in from the camera
+            liftAngle = 0;
+            clawAngle = 0; //It should already tightly closed
+
+            firstRead = FALSE_VAL;
+            firstRun = TRUE_VAL;
+
+            setup_dropoff = TRUE_VAL;
+            claw_dropoff = FALSE_VAL;
+            post_claw_dropoff = FALSE_VAL;
+            idle_mode = FALSE_VAL;
+
+            status0 = CONTINUING_CONFIG;
+            status1 = CONTINUING_CONFIG;
+            status2 = CONTINUING_CONFIG;
+            status3 = CONTINUING_CONFIG;
+
+        }
+
+        //increment/ decrement the duty cycle/ degree of the pwm by 1
+        //PWM formulas for each motor will return a completion status on it's progress to configuration.
+        status0 = setPWM_Base(baseAngle);
+        //dbgOutputLoc(DBG_SUBROUTINE_PWM_EXIT_BASE);
+
+        status2 = setPWM_Lift(liftAngle);
+        //dbgOutputLoc(DBG_SUBROUTINE_PWM_EXIT_LIFT);
+
+        status1 = setPWM_Extend(extendAngle);
+        //dbgOutputLoc(DBG_SUBROUTINE_PWM_EXIT_EXTEND);
+
+        status3 = setPWM_Claw(clawAngle);
+        //dbgOutputLoc(DBG_SUBROUTINE_PWM_EXIT_CLAW);
+
+
+        if(setup_dropoff == TRUE_VAL && claw_dropoff == FALSE_VAL && post_claw_dropoff == FALSE_VAL && idle_mode == FALSE_VAL)
+        {
+            dbgOutputLoc(DBG_DROPOFF_SETUP_DROPOFF_ENTER);
+            //Now that all the configurations are done, we should use the claw to
+            //drop off the object
+            if(status0 == CONFIG_COMPLETE && status1 == CONFIG_COMPLETE && status2 == CONFIG_COMPLETE && status3 == CONFIG_COMPLETE)
+            {
+                //printString("GGGGGGOOOOOOOOOOOIIIIIIIIIIIIIINNNNNNNNNNNNGGGGGGGGGGGG TTTTTTOOOOOOOO CLLLLLLAAAAAAWWWWWWW DDDDDDDDDRRROOOOOPPPPPPPPPPPPOOOOOOOOOOFFFFFFFFFFFF");
+
+                dbgOutputLoc(DBG_DROPOFF_SETUP_DROPOFF_EXIT);
+
+                setup_dropoff = FALSE_VAL;
+                claw_dropoff = TRUE_VAL;
+
+                status0 = CONTINUING_CONFIG;
+                status1 = CONTINUING_CONFIG;
+                status2 = CONTINUING_CONFIG;
+                status3 = CONTINUING_CONFIG;
+            }
+
+            //We must continue to increment the PWMs
+            firstRun = TRUE_VAL;
+            firstRead = FALSE_VAL;
+        }
+
+        else if(setup_dropoff == FALSE_VAL && claw_dropoff == TRUE_VAL && post_claw_dropoff == FALSE_VAL && idle_mode == FALSE_VAL)
+        {
+            dbgOutputLoc(DBG_DROPOFF_CLAW_DROPOFF_ENTER);
+            static bool temp = false;
+            if(temp == false)
+            {
+                status0 = CONTINUING_CONFIG;
+                status1 = CONTINUING_CONFIG;
+                status2 = CONTINUING_CONFIG;
+                status3 = CONTINUING_CONFIG;
+
+                temp = true;
+            }
+
+            extendAngle = 120;
+            //clawAngle = 60;
+
+            if(status0 == CONFIG_COMPLETE && status1 == CONFIG_COMPLETE && status2 == CONFIG_COMPLETE && status3 == CONFIG_COMPLETE)
+            {
+                //printString("GGGGGGGGOOOOOOOOOIIIIIIIIIIIINNNNNGGGGGGGG TTTOOOOOOOO IIIIIIIIIIDDDDDDDDDDDDLLLLLLLLLLLEEEEEEEEE");
+
+                dbgOutputLoc(DBG_DROPOFF_CLAW_DROPOFF_EXIT);
+
+                claw_dropoff = FALSE_VAL;
+                post_claw_dropoff = TRUE_VAL;
+
+                temp = false;
+                status0 = CONTINUING_CONFIG;
+                status1 = CONTINUING_CONFIG;
+                status2 = CONTINUING_CONFIG;
+                status3 = CONTINUING_CONFIG;
+            }
+
+            //We must continue to increment the PWMs
+            firstRun = TRUE_VAL;
+            firstRead = FALSE_VAL;
+        }
+
+        else if(setup_dropoff == FALSE_VAL && claw_dropoff == FALSE_VAL && post_claw_dropoff == TRUE_VAL && idle_mode == FALSE_VAL)
+        {
+            static bool temp = false;
+            if(temp == false)
+            {
+                status0 = CONTINUING_CONFIG;
+                status1 = CONTINUING_CONFIG;
+                status2 = CONTINUING_CONFIG;
+                status3 = CONTINUING_CONFIG;
+                temp = true;
+            }
+
+            clawAngle = 60;
+            //extendAngle = 70;
+
+            if(status0 == CONFIG_COMPLETE && status1 == CONFIG_COMPLETE && status2 == CONFIG_COMPLETE && status3 == CONFIG_COMPLETE)
+            {
+                //printString("GGGGGGGGOOOOOOOOOIIIIIIIIIIIINNNNNGGGGGGGG TTTOOOOOOOO IIIIIIIIIIDDDDDDDDDDDDLLLLLLLLLLLEEEEEEEEE");
+
+
+                post_claw_dropoff = FALSE_VAL;
+                idle_mode = TRUE_VAL;
+
+                temp = false;
+
+                status0 = CONTINUING_CONFIG;
+                status1 = CONTINUING_CONFIG;
+                status2 = CONTINUING_CONFIG;
+                status3 = CONTINUING_CONFIG;
+            }
+
+            //We must continue to increment the PWMs
+            firstRun = TRUE_VAL;
+            firstRead = FALSE_VAL;
+        }
+
+        else if(setup_dropoff == FALSE_VAL && claw_dropoff == FALSE_VAL && post_claw_dropoff == FALSE_VAL && idle_mode == TRUE_VAL)
+        {
+            dbgOutputLoc(DBG_DROPOFF_IDLE_MODE_ENTER);
+            static bool temp = false;
+            if(temp == false)
+            {
+                status0 = CONTINUING_CONFIG;
+                status1 = CONTINUING_CONFIG;
+                status2 = CONTINUING_CONFIG;
+                status3 = CONTINUING_CONFIG;
+                temp = true;
+            }
+            //baseAngle = 90;
+            clawAngle = 60;
+            extendAngle = 50;
+            //liftAngle = 40;
+
+            //We're done configuring the PWMs if this if statement is true
+            if(status0 == CONFIG_COMPLETE && status1 == CONFIG_COMPLETE && status2 == CONFIG_COMPLETE && status3 == CONFIG_COMPLETE)
+            {
+                //printString("RRRRRRRRRRRREEEEEEEEEEEEAAAAAAAAAAAAAADDDDDDDDDDDDDYYYYYYYYYYYYYY FFFFFFFFFFFFOOOOOORRRRRRR PPPIIIIIICCCCKKKKKKKUUUUPPPPPPPPPPP!!");
+
+                dbgOutputLoc(DBG_DROPOFF_IDLE_MODE_EXIT);
+
+                temp = false;
+                firstRun = FALSE_VAL;
+                firstRead = TRUE_VAL;
+                *robot_arm_status = PICK_UP_MODE; //We will let the robot arm thread know
+                //It is ready for PICK_UP_MODE Next time it stops.
+
+                //We should publish to the server that it's okay for the rover to start moving
+
+            }
+
+            else
+            {
+                //We must continue to increment the PWMs
+                firstRun = TRUE_VAL;
+                firstRead = FALSE_VAL;
+            }
+        }
+
+
+        if(firstRun == TRUE_VAL)
+        {
+            startSoftwareTimer();
+        }
+
+    }
+
+    dbgOutputLoc(DBG_DROPOFF_EXIT);
 }
 
 //*****************************************************************************
@@ -888,7 +1392,7 @@ void Mqtt_start()
     }
 
     pthread_attr_init(&pAttrs3);
-    priParam3.sched_priority = 3;
+    priParam3.sched_priority = 2;
     retc_2 = pthread_attr_setschedparam(&pAttrs3, &priParam3);
     retc_2 |= pthread_attr_setstacksize(&pAttrs3, THREADSTACKSIZE2);
     retc_2 |= pthread_attr_setdetachstate(&pAttrs3, PTHREAD_CREATE_DETACHED);
@@ -902,7 +1406,7 @@ void Mqtt_start()
     }
 
     pthread_attr_init(&pAttrs4);
-    priParam4.sched_priority = 3;
+    priParam4.sched_priority = 2;
     retc_3 = pthread_attr_setschedparam(&pAttrs4, &priParam4);
     retc_3 |= pthread_attr_setstacksize(&pAttrs4, THREADSTACKSIZE3);
     retc_3 |= pthread_attr_setdetachstate(&pAttrs4, PTHREAD_CREATE_DETACHED);

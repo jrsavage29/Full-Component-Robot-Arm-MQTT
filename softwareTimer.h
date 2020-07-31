@@ -13,6 +13,7 @@
 #include <servo_PWM.h>
 #include <timers.h>
 #include <FreeRTOS.h>
+#include <debugIntercomponent.h>
 
 
 /* Driver Header files */

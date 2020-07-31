@@ -19,7 +19,7 @@ void configureSTimer()
 
 void startSoftwareTimer()
 {
-    //dbgOutputLoc(DBG_STIMER_START);
+    dbgOutputLoc(DBG_STIMER_START);
     xTimerStart(xAutoReloadTimer, portMAX_DELAY);
 
 }
@@ -43,11 +43,11 @@ BaseType_t checkIfTimerActive()
 void softwareTimerCallback(TimerHandle_t xAutoReloadTimer)
 {
 
-    //dbgOutputLoc(DBG_STIMER_ENTER_ISR);
+    dbgOutputLoc(DBG_STIMER_ENTER_ISR);
     Motor_Angles timer_status_only;
     timer_status_only.timer_expired = TRUE_VAL;
     sendTimerStatusfromISR(timer_status_only);
-    //dbgOutputLoc(DBG_STIMER_EXIT_ISR); //0x1F
+    dbgOutputLoc(DBG_STIMER_EXIT_ISR); //0x1F
 
 }
 
