@@ -6,7 +6,8 @@
  */
 
 #include "dataTimer.h"
-
+extern char* camera_report;
+extern char* arm_status;
 
 void configureDataTimer()
 {
@@ -38,11 +39,13 @@ void formatDataForQueue()
         char jsonObject[BUFFER_SIZE];
         static int sequenceNumber = 0;
 
-        static char * arm_status = "READY";
-        static char * rover_status = "STOPPED";
-        static int counter = 0;
+        //MAYBE MAKE THESE STATIC GLOBAL VARIABLES SO THEY COULD BE CHANGED ANYWHERE????????
+        //static char * arm_status = "READY"; //OR could be "IN USE"
+        //static char * camera_report = "VALID"; //OR could be "INVALID"
+        //static char * rover_status = "STOPPED";
+        //static int counter = 0;
 
-        if(counter >= 25 && counter < 40)
+        /*if(counter >= 25 && counter < 40)
         {
             arm_status = "HOLDING";
         }
@@ -56,15 +59,15 @@ void formatDataForQueue()
         {
             arm_status = "READY";
             counter = 0;
-        }
+        }*/
 
-        counter++;
+        //counter++;
 
-//        char* topic_name = "Summer/Team2/Arm/PickupStatus";
-//        snprintf(jsonObject, BUFFER_SIZE, "{\"Sequence Number\":\"%d\", \"Arm Status\":\"%s\", \"Topic\":\"%s\"}", sequenceNumber, arm_status, topic_name);
+        char* topic_name = "Summer/Test2/Arm/PickupStatus";
+        snprintf(jsonObject, BUFFER_SIZE, "{\"Topic\":\"%s\", \"Sequence Number\":\"%d\", \"Robot Arm Status\":\"%s\", \"Camera Report\":\"%s\"}", topic_name, sequenceNumber, arm_status, camera_report );
 
-        char* topic_name = "Summer/Testing/Signal";
-        snprintf(jsonObject, BUFFER_SIZE, "{\"Topic\":\"%s\", \"Sequence Number\":\"%d\", \"Rover Status\":\"%s\"}", topic_name, sequenceNumber, rover_status );
+        //char* topic_name = "Summer/Testing/Signal";
+        //snprintf(jsonObject, BUFFER_SIZE, "{\"Topic\":\"%s\", \"Sequence Number\":\"%d\", \"Rover Status\":\"%s\"}", topic_name, sequenceNumber, rover_status );
         queueElement.msgPtr = jsonObject;
         sequenceNumber++;
 
