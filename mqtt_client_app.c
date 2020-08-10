@@ -190,6 +190,7 @@
 #define SERVO_SETUP_MODE    1
 #define PICK_UP_MODE        2
 #define DROP_OFF_MODE       3
+#define TRY_AGAIN           4
 
 
 //*****************************************************************************
@@ -610,6 +611,7 @@ void * ReceiveClient(void *pvParameters)
 
                 else if(strcmp(rover_status, "MOVING") == 0)
                 {
+                    arm_status = "IDLE FOR MOVING";
                     sent = FALSE_VAL;
                 }
 
@@ -701,17 +703,35 @@ void *robotArmThread(void *pvParameters)
 
         }
 
-        camera_report = "VALID IN ARM";
-
 
         if( robot_arm_status == PICK_UP_MODE )
         {
             arm_status = "IN USE PICKUP";
+            camera_report = "VALID IN ARM";
+
             pickUp(data, &robot_arm_status);
 
             if(robot_arm_status == DROP_OFF_MODE)
             {
-                arm_status = "READY FROM PICKUP";
+                Task_Status status;
+                Motor_Angles sending_data;
+
+                getStatusofConfiguration( &status );
+
+                if( ( strcmp(status.color, "LIGHT") == 0 || strcmp(status.color, "DARK") == 0) )
+                {
+                    robot_arm_status = PICK_UP_MODE;
+
+                    sending_data.object_color = status.color;
+                    sending_data.angle_Base = atoi(status.position);
+
+                    sendToReadDataQueue(sending_data);
+                }
+
+                else
+                {
+                    arm_status = "READY DONE PICKUP";
+                }
             }
 
         }
@@ -719,6 +739,8 @@ void *robotArmThread(void *pvParameters)
         else if( robot_arm_status == DROP_OFF_MODE )
         {
             arm_status = "IN USE DROP";
+            camera_report = "VALID IN ARM";
+
             dropOff(&robot_arm_status, object_color);
 
             if(robot_arm_status == PICK_UP_MODE)
