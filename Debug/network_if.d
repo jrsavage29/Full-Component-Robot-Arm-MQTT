@@ -53,7 +53,7 @@ network_if.obj: C:/ti/simplelink_cc32xx_sdk_4_10_00_07/source/ti/drivers/net/wif
 network_if.obj: ../network_if.h
 network_if.obj: ../uart_term.h
 network_if.obj: C:/ti/simplelink_cc32xx_sdk_4_10_00_07/source/ti/drivers/UART.h
-network_if.obj: C:/Users/jrsav/workspace_v10/Full_Component_MQTT/Debug/syscfg/ti_drivers_config.h
+network_if.obj: C:/Users/jrsav/workspace_v10/Final_TEAM_Component/Debug/syscfg/ti_drivers_config.h
 network_if.obj: C:/ti/simplelink_cc32xx_sdk_4_10_00_07/source/ti/devices/DeviceFamily.h
 network_if.obj: C:/ti/ccs1000/ccs/tools/compiler/ti-cgt-arm_20.2.0.LTS/include/stdio.h
 network_if.obj: C:/ti/ccs1000/ccs/tools/compiler/ti-cgt-arm_20.2.0.LTS/include/stdarg.h
@@ -111,7 +111,7 @@ C:/ti/simplelink_cc32xx_sdk_4_10_00_07/source/ti/drivers/net/wifi/source/nonos.h
 ../network_if.h: 
 ../uart_term.h: 
 C:/ti/simplelink_cc32xx_sdk_4_10_00_07/source/ti/drivers/UART.h: 
-C:/Users/jrsav/workspace_v10/Full_Component_MQTT/Debug/syscfg/ti_drivers_config.h: 
+C:/Users/jrsav/workspace_v10/Final_TEAM_Component/Debug/syscfg/ti_drivers_config.h: 
 C:/ti/simplelink_cc32xx_sdk_4_10_00_07/source/ti/devices/DeviceFamily.h: 
 C:/ti/ccs1000/ccs/tools/compiler/ti-cgt-arm_20.2.0.LTS/include/stdio.h: 
 C:/ti/ccs1000/ccs/tools/compiler/ti-cgt-arm_20.2.0.LTS/include/stdarg.h: 

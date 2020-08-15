@@ -41,7 +41,7 @@ main_freertos.obj: C:/ti/simplelink_cc32xx_sdk_4_10_00_07/source/ti/drivers/Time
 main_freertos.obj: ../debugIntercomponent.h
 main_freertos.obj: C:/ti/simplelink_cc32xx_sdk_4_10_00_07/source/ti/drivers/GPIO.h
 main_freertos.obj: C:/ti/simplelink_cc32xx_sdk_4_10_00_07/source/ti/drivers/UART.h
-main_freertos.obj: C:/Users/jrsav/workspace_v10/Full_Component_MQTT/Debug/syscfg/ti_drivers_config.h
+main_freertos.obj: C:/Users/jrsav/workspace_v10/Final_TEAM_Component/Debug/syscfg/ti_drivers_config.h
 main_freertos.obj: C:/ti/simplelink_cc32xx_sdk_4_10_00_07/source/ti/devices/DeviceFamily.h
 main_freertos.obj: ../client_cbs.h
 main_freertos.obj: C:/ti/simplelink_cc32xx_sdk_4_10_00_07/source/ti/net/mqtt/mqttserver.h
@@ -97,7 +97,7 @@ C:/ti/simplelink_cc32xx_sdk_4_10_00_07/source/ti/drivers/Timer.h:
 ../debugIntercomponent.h: 
 C:/ti/simplelink_cc32xx_sdk_4_10_00_07/source/ti/drivers/GPIO.h: 
 C:/ti/simplelink_cc32xx_sdk_4_10_00_07/source/ti/drivers/UART.h: 
-C:/Users/jrsav/workspace_v10/Full_Component_MQTT/Debug/syscfg/ti_drivers_config.h: 
+C:/Users/jrsav/workspace_v10/Final_TEAM_Component/Debug/syscfg/ti_drivers_config.h: 
 C:/ti/simplelink_cc32xx_sdk_4_10_00_07/source/ti/devices/DeviceFamily.h: 
 ../client_cbs.h: 
 C:/ti/simplelink_cc32xx_sdk_4_10_00_07/source/ti/net/mqtt/mqttserver.h: 

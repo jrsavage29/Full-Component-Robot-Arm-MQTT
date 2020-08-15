@@ -15,7 +15,7 @@ void configureDataTimer()
     Timer_Params params;
 
     Timer_Params_init(&params);
-    params.period = 1000000; //1s
+    params.period = 100000; //1s
     params.periodUnits = Timer_PERIOD_US;
     params.timerMode = Timer_CONTINUOUS_CALLBACK;
     params.timerCallback = timerCallback;
@@ -63,7 +63,7 @@ void formatDataForQueue()
 
         //counter++;
 
-        char* topic_name = "Summer/Test2/Arm/PickupStatus";
+        char* topic_name = "Summer/Team2/Arm/PickupStatus";
         snprintf(jsonObject, BUFFER_SIZE, "{\"Topic\":\"%s\", \"Sequence Number\":\"%d\", \"Robot Arm Status\":\"%s\", \"Camera Report\":\"%s\"}", topic_name, sequenceNumber, arm_status, camera_report );
 
         //char* topic_name = "Summer/Testing/Signal";

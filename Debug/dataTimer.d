@@ -19,7 +19,7 @@ dataTimer.obj: C:/ti/ccs1000/ccs/tools/compiler/ti-cgt-arm_20.2.0.LTS/include/sy
 dataTimer.obj: ../debugIntercomponent.h
 dataTimer.obj: C:/ti/simplelink_cc32xx_sdk_4_10_00_07/source/ti/drivers/GPIO.h
 dataTimer.obj: C:/ti/simplelink_cc32xx_sdk_4_10_00_07/source/ti/drivers/UART.h
-dataTimer.obj: C:/Users/jrsav/workspace_v10/Full_Component_MQTT/Debug/syscfg/ti_drivers_config.h
+dataTimer.obj: C:/Users/jrsav/workspace_v10/Final_TEAM_Component/Debug/syscfg/ti_drivers_config.h
 dataTimer.obj: C:/ti/simplelink_cc32xx_sdk_4_10_00_07/source/ti/devices/DeviceFamily.h
 dataTimer.obj: C:/FreeRTOSv10.3.1/FreeRTOS/Source/include/FreeRTOS.h
 dataTimer.obj: C:/Users/jrsav/workspace_v10/freertos_builds_CC3220SF_LAUNCHXL_release_ccs/FreeRTOSConfig.h
@@ -62,7 +62,7 @@ C:/ti/ccs1000/ccs/tools/compiler/ti-cgt-arm_20.2.0.LTS/include/sys/_stdint.h:
 ../debugIntercomponent.h: 
 C:/ti/simplelink_cc32xx_sdk_4_10_00_07/source/ti/drivers/GPIO.h: 
 C:/ti/simplelink_cc32xx_sdk_4_10_00_07/source/ti/drivers/UART.h: 
-C:/Users/jrsav/workspace_v10/Full_Component_MQTT/Debug/syscfg/ti_drivers_config.h: 
+C:/Users/jrsav/workspace_v10/Final_TEAM_Component/Debug/syscfg/ti_drivers_config.h: 
 C:/ti/simplelink_cc32xx_sdk_4_10_00_07/source/ti/devices/DeviceFamily.h: 
 C:/FreeRTOSv10.3.1/FreeRTOS/Source/include/FreeRTOS.h: 
 C:/Users/jrsav/workspace_v10/freertos_builds_CC3220SF_LAUNCHXL_release_ccs/FreeRTOSConfig.h: 

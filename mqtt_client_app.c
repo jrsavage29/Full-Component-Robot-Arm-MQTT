@@ -140,9 +140,9 @@
 #define SUBSCRIPTION_TOPIC_COUNT 2
 
 /* Defining Subscription Topic Values                                        */
-#define SUBSCRIPTION_TOPIC0         "Summer/Test2/Camera"
+#define SUBSCRIPTION_TOPIC0         "Summer/Team2/Camera"
 //#define SUBSCRIPTION_TOPIC1         "Summer/Team2/Arm/PickupStatus"
-#define SUBSCRIPTION_TOPIC1         "Summer/Test2/Rover/StopSignal"
+#define SUBSCRIPTION_TOPIC1         "Summer/Team2/Rover/StopSignal"
 //#define SUBSCRIPTION_TOPIC1         "Summer/Testing/Signal"
 
 
@@ -275,6 +275,7 @@ char* camera_report;
 char* arm_status;
 
 static int sent = FALSE_VAL;
+static bool is_stopped = false;
 
 //*****************************************************************************
 //                 Banner VARIABLES
@@ -560,10 +561,10 @@ void * ReceiveClient(void *pvParameters)
         {
         case MSG_RECV_BY_CLIENT:
         {
-            printString("Data: ");
+            //printString("Data: ");
             tmpBuff = (char *) ((char *) queueElemRecv.msgPtr + 13 + queueElemRecv.topLen );
-            printString(tmpBuff);
-            printString("\n\r");
+            //printString(tmpBuff);
+            //printString("\n\r");
 
             struct msgQueue queueElemStats;
             queueElemStats.event = SEND_DATA_TO_STATS;
@@ -585,12 +586,12 @@ void * ReceiveClient(void *pvParameters)
             char keyString[length + 1];
             memcpy(keyString, &tmpBuff[key.start], length);
             keyString[length] = '\0';
-            printString("Identifying keyString: ");
-            printString(keyString);
-            printString("\n\r");
+            //printString("Identifying keyString: ");
+            //printString(keyString);
+            //printString("\n\r");
             char* keyStringTemp = keyString;
 
-            if( strcmp(keyStringTemp, "Rover Status") == 0 && can_send == false)
+            if( strcmp(keyStringTemp, "Rover Status") == 0)
             {
 
                 jsmntok_t keyR = tokens[6];
@@ -600,24 +601,35 @@ void * ReceiveClient(void *pvParameters)
                 keyStringR[lengthR] = '\0';
                 rover_status = keyStringR;
 
-                printString("Rover Status: ");
-                printString(keyStringR);
-                printString("\n\r");
+                //printString("Rover Status: ");
+                //printString(keyStringR);
+                //printString("\n\r");
 
                 if(strcmp(rover_status, "STOPPED") == 0)
                 {
-                    can_send = true;
+                    is_stopped = true;
                 }
 
-                else if(strcmp(rover_status, "MOVING") == 0)
+                else
                 {
-                    arm_status = "IDLE FOR MOVING";
+                    arm_status = "IDLE";
                     sent = FALSE_VAL;
+                    is_stopped = false;
+
                 }
+
+//                else if(strcmp(rover_status, "IDLE") == 0)
+//                {
+//                    arm_status = "IDLE";
+//                    can_send = true;
+//                    sent = FALSE_VAL;
+//                    is_stopped = false;
+//
+//                }
 
             }
 
-            if( strcmp(keyStringTemp, "Color") == 0 && can_send == true)
+            if( strcmp(keyStringTemp, "Color") == 0)
             {
 
                 jsmntok_t keyC = tokens[6];
@@ -626,9 +638,9 @@ void * ReceiveClient(void *pvParameters)
                 memcpy(keyStringC, &tmpBuff[keyC.start], lengthC);
                 keyStringC[lengthC] = '\0';
                 color = keyStringC;
-                printString("Camera Color: ");
-                printString(color);
-                printString("\n\r");
+                //printString("Camera Color: ");
+                //printString(color);
+                //printString("\n\r");
 
                 data.color = color;
 
@@ -639,9 +651,9 @@ void * ReceiveClient(void *pvParameters)
                 memcpy(keyStringP, &tmpBuff[keyP.start], lengthP);
                 keyStringP[lengthP] = '\0';
                 position = keyStringP;
-                printString("Camera Position: ");
-                printString(position);
-                printString("\n\r");
+                //printString("Camera Position: ");
+                //printString(position);
+                //printString("\n\r");
 
                 data.position = position;
 
@@ -656,16 +668,7 @@ void * ReceiveClient(void *pvParameters)
             if(can_send2 == true)
             {
 
-//                printString("Color to Send: ");
-//                printString(data.color);
-//                printString("\r\n");
-//
-//                printString("Position to Send: ");
-//                printString(data.position);
-//                printString("\r\n");
-
                 setStatusofConfiguration(data);
-                can_send = false;
                 can_send2 = false;
             }
 
@@ -706,8 +709,8 @@ void *robotArmThread(void *pvParameters)
 
         if( robot_arm_status == PICK_UP_MODE )
         {
-            arm_status = "IN USE PICKUP";
-            camera_report = "VALID IN ARM";
+            arm_status = "IN USE";
+            //camera_report = "VALID";
 
             pickUp(data, &robot_arm_status);
 
@@ -730,7 +733,7 @@ void *robotArmThread(void *pvParameters)
 
                 else
                 {
-                    arm_status = "READY DONE PICKUP";
+                    arm_status = "READY";
                 }
             }
 
@@ -738,15 +741,15 @@ void *robotArmThread(void *pvParameters)
 
         else if( robot_arm_status == DROP_OFF_MODE )
         {
-            arm_status = "IN USE DROP";
-            camera_report = "VALID IN ARM";
+            arm_status = "IN USE";
+            //camera_report = "VALID";
 
             dropOff(&robot_arm_status, object_color);
 
             if(robot_arm_status == PICK_UP_MODE)
             {
                 initial_check = TRUE_VAL;
-                arm_status = "READY DONE DROP";
+                arm_status = "READY";
             }
         }
 
@@ -785,9 +788,24 @@ void *readDataThread(void *pvParameters)
 
         //If the rover has stopped moving, we should send the data being seen by the camera
         //to the robot arm control thread so it can pick up
-        if( sent == FALSE_VAL && ( strcmp(status.color, "LIGHT") == 0 || strcmp(status.color, "DARK") == 0) )
+        if( ( strcmp(status.color, "LIGHT") == 0 || strcmp(status.color, "DARK") == 0) )
+        {
+
+            camera_report = "VALID";
+
+        }
+
+        if( !( strcmp(status.color, "LIGHT") == 0 || strcmp(status.color, "DARK") == 0) )
+        {
+
+            camera_report = "INVALID";
+
+        }
+
+        if( sent == FALSE_VAL && is_stopped == true )
         {
             //printString("SENDING DATA TO ROBOT ARM!\r\n");
+            //camera_report = "VALID";
             sending_data.object_color = status.color;
             sending_data.angle_Base = atoi(status.position);
             //sending_data.rover_Status = status.rover_Status;
@@ -798,10 +816,11 @@ void *readDataThread(void *pvParameters)
             sent = TRUE_VAL;
         }
 
-        else if(sent == FALSE_VAL && ( strcmp(status.color, "LIGHT") != 0 && strcmp(status.color, "DARK") != 0))
-        {
-            camera_report = "INVALID COLOR READ";
-        }
+
+
+
+
+
 
 
 /*
@@ -1842,8 +1861,8 @@ int32_t DisplayAppBanner(char* appName,
 
 void mainThread(void * args)
 {
-    arm_status = "IDLE INITIAL"; //OR could be "IN USE"
-    camera_report = "VALID INITIAL"; //OR could be "INVALID"
+    arm_status = "IDLE"; //OR could be "IN USE"
+    camera_report = "INVALID INIT"; //OR could be "INVALID"
 
     pthread_t spawn_thread = (pthread_t) NULL;
     pthread_attr_t pAttrs_spawn;

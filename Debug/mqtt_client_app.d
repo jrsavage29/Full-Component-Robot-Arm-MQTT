@@ -78,7 +78,7 @@ mqtt_client_app.obj: C:/ti/simplelink_cc32xx_sdk_4_10_00_07/source/ti/net/mqtt/c
 mqtt_client_app.obj: C:/ti/ccs1000/ccs/tools/compiler/ti-cgt-arm_20.2.0.LTS/include/stdlib.h
 mqtt_client_app.obj: ../network_if.h
 mqtt_client_app.obj: ../uart_term.h
-mqtt_client_app.obj: C:/Users/jrsav/workspace_v10/Full_Component_MQTT/Debug/syscfg/ti_drivers_config.h
+mqtt_client_app.obj: C:/Users/jrsav/workspace_v10/Final_TEAM_Component/Debug/syscfg/ti_drivers_config.h
 mqtt_client_app.obj: C:/ti/simplelink_cc32xx_sdk_4_10_00_07/source/ti/devices/DeviceFamily.h
 mqtt_client_app.obj: C:/ti/ccs1000/ccs/tools/compiler/ti-cgt-arm_20.2.0.LTS/include/stdio.h
 mqtt_client_app.obj: C:/ti/ccs1000/ccs/tools/compiler/ti-cgt-arm_20.2.0.LTS/include/stdarg.h
@@ -86,19 +86,19 @@ mqtt_client_app.obj: ../client_cbs.h
 mqtt_client_app.obj: C:/ti/simplelink_cc32xx_sdk_4_10_00_07/source/ti/net/mqtt/mqttserver.h
 mqtt_client_app.obj: ../dataTimer.h
 mqtt_client_app.obj: ../debugIntercomponent.h
-mqtt_client_app.obj: C:/Users/jrsav/workspace_v10/Full_Component_MQTT/jsmn.h
-mqtt_client_app.obj: C:/Users/jrsav/workspace_v10/Full_Component_MQTT/message_queue.h
-mqtt_client_app.obj: C:/Users/jrsav/workspace_v10/Full_Component_MQTT/softwareTimer.h
+mqtt_client_app.obj: C:/Users/jrsav/workspace_v10/Final_TEAM_Component/jsmn.h
+mqtt_client_app.obj: C:/Users/jrsav/workspace_v10/Final_TEAM_Component/message_queue.h
+mqtt_client_app.obj: C:/Users/jrsav/workspace_v10/Final_TEAM_Component/softwareTimer.h
 mqtt_client_app.obj: C:/ti/ccs1000/ccs/tools/compiler/ti-cgt-arm_20.2.0.LTS/include/math.h
 mqtt_client_app.obj: C:/ti/ccs1000/ccs/tools/compiler/ti-cgt-arm_20.2.0.LTS/include/_defs.h
 mqtt_client_app.obj: C:/ti/ccs1000/ccs/tools/compiler/ti-cgt-arm_20.2.0.LTS/include/machine/_limits.h
-mqtt_client_app.obj: C:/Users/jrsav/workspace_v10/Full_Component_MQTT/message_queue.h
-mqtt_client_app.obj: C:/Users/jrsav/workspace_v10/Full_Component_MQTT/servo_PWM.h
-mqtt_client_app.obj: C:/Users/jrsav/workspace_v10/Full_Component_MQTT/message_queue.h
+mqtt_client_app.obj: C:/Users/jrsav/workspace_v10/Final_TEAM_Component/message_queue.h
+mqtt_client_app.obj: C:/Users/jrsav/workspace_v10/Final_TEAM_Component/servo_PWM.h
+mqtt_client_app.obj: C:/Users/jrsav/workspace_v10/Final_TEAM_Component/message_queue.h
 mqtt_client_app.obj: C:/ti/simplelink_cc32xx_sdk_4_10_00_07/source/ti/drivers/PWM.h
 mqtt_client_app.obj: C:/FreeRTOSv10.3.1/FreeRTOS/Source/include/timers.h
-mqtt_client_app.obj: C:/Users/jrsav/workspace_v10/Full_Component_MQTT/servo_PWM.h
-mqtt_client_app.obj: C:/Users/jrsav/workspace_v10/Full_Component_MQTT/message_queue.h
+mqtt_client_app.obj: C:/Users/jrsav/workspace_v10/Final_TEAM_Component/servo_PWM.h
+mqtt_client_app.obj: C:/Users/jrsav/workspace_v10/Final_TEAM_Component/message_queue.h
 
 ../mqtt_client_app.c: 
 C:/ti/ccs1000/ccs/tools/compiler/ti-cgt-arm_20.2.0.LTS/include/stdlib.h: 
@@ -178,7 +178,7 @@ C:/ti/simplelink_cc32xx_sdk_4_10_00_07/source/ti/net/mqtt/common/mqtt_common.h:
 C:/ti/ccs1000/ccs/tools/compiler/ti-cgt-arm_20.2.0.LTS/include/stdlib.h: 
 ../network_if.h: 
 ../uart_term.h: 
-C:/Users/jrsav/workspace_v10/Full_Component_MQTT/Debug/syscfg/ti_drivers_config.h: 
+C:/Users/jrsav/workspace_v10/Final_TEAM_Component/Debug/syscfg/ti_drivers_config.h: 
 C:/ti/simplelink_cc32xx_sdk_4_10_00_07/source/ti/devices/DeviceFamily.h: 
 C:/ti/ccs1000/ccs/tools/compiler/ti-cgt-arm_20.2.0.LTS/include/stdio.h: 
 C:/ti/ccs1000/ccs/tools/compiler/ti-cgt-arm_20.2.0.LTS/include/stdarg.h: 
@@ -186,16 +186,16 @@ C:/ti/ccs1000/ccs/tools/compiler/ti-cgt-arm_20.2.0.LTS/include/stdarg.h:
 C:/ti/simplelink_cc32xx_sdk_4_10_00_07/source/ti/net/mqtt/mqttserver.h: 
 ../dataTimer.h: 
 ../debugIntercomponent.h: 
-C:/Users/jrsav/workspace_v10/Full_Component_MQTT/jsmn.h: 
-C:/Users/jrsav/workspace_v10/Full_Component_MQTT/message_queue.h: 
-C:/Users/jrsav/workspace_v10/Full_Component_MQTT/softwareTimer.h: 
+C:/Users/jrsav/workspace_v10/Final_TEAM_Component/jsmn.h: 
+C:/Users/jrsav/workspace_v10/Final_TEAM_Component/message_queue.h: 
+C:/Users/jrsav/workspace_v10/Final_TEAM_Component/softwareTimer.h: 
 C:/ti/ccs1000/ccs/tools/compiler/ti-cgt-arm_20.2.0.LTS/include/math.h: 
 C:/ti/ccs1000/ccs/tools/compiler/ti-cgt-arm_20.2.0.LTS/include/_defs.h: 
 C:/ti/ccs1000/ccs/tools/compiler/ti-cgt-arm_20.2.0.LTS/include/machine/_limits.h: 
-C:/Users/jrsav/workspace_v10/Full_Component_MQTT/message_queue.h: 
-C:/Users/jrsav/workspace_v10/Full_Component_MQTT/servo_PWM.h: 
-C:/Users/jrsav/workspace_v10/Full_Component_MQTT/message_queue.h: 
+C:/Users/jrsav/workspace_v10/Final_TEAM_Component/message_queue.h: 
+C:/Users/jrsav/workspace_v10/Final_TEAM_Component/servo_PWM.h: 
+C:/Users/jrsav/workspace_v10/Final_TEAM_Component/message_queue.h: 
 C:/ti/simplelink_cc32xx_sdk_4_10_00_07/source/ti/drivers/PWM.h: 
 C:/FreeRTOSv10.3.1/FreeRTOS/Source/include/timers.h: 
-C:/Users/jrsav/workspace_v10/Full_Component_MQTT/servo_PWM.h: 
-C:/Users/jrsav/workspace_v10/Full_Component_MQTT/message_queue.h: 
+C:/Users/jrsav/workspace_v10/Final_TEAM_Component/servo_PWM.h: 
+C:/Users/jrsav/workspace_v10/Final_TEAM_Component/message_queue.h: 

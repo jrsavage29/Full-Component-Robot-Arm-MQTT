@@ -143,38 +143,38 @@ endif
 
 # Add inputs and outputs from these tool invocations to the build variables 
 EXE_OUTPUTS += \
-Full_Component_MQTT.out \
+Final_TEAM_Component.out \
 
 EXE_OUTPUTS__QUOTED += \
-"Full_Component_MQTT.out" \
+"Final_TEAM_Component.out" \
 
 BIN_OUTPUTS += \
-Full_Component_MQTT.hex \
+Final_TEAM_Component.hex \
 
 BIN_OUTPUTS__QUOTED += \
-"Full_Component_MQTT.hex" \
+"Final_TEAM_Component.hex" \
 
 
 # All Target
 all: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
-	@$(MAKE) --no-print-directory -Onone "Full_Component_MQTT.out"
+	@$(MAKE) --no-print-directory -Onone "Final_TEAM_Component.out"
 
 dependents:
 	-cd C:/Users/jrsav/workspace_v10/freertos_builds_CC3220SF_LAUNCHXL_release_ccs/Debug && $(MAKE) all
 
 # Tool invocations
-Full_Component_MQTT.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS) C:/Users/jrsav/workspace_v10/freertos_builds_CC3220SF_LAUNCHXL_release_ccs/Debug/freertos_builds_CC3220SF_LAUNCHXL_release_ccs.lib
+Final_TEAM_Component.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS) C:/Users/jrsav/workspace_v10/freertos_builds_CC3220SF_LAUNCHXL_release_ccs/Debug/freertos_builds_CC3220SF_LAUNCHXL_release_ccs.lib
 	@echo 'Building target: "$@"'
 	@echo 'Invoking: ARM Linker'
-	"C:/ti/ccs1000/ccs/tools/compiler/ti-cgt-arm_20.2.0.LTS/bin/armcl" -mv7M4 --code_state=16 --float_support=vfplib -me -g --diag_warning=225 --diag_warning=255 --diag_wrap=off --display_error_number --gen_func_subsections=on -z -m"Full_Component_MQTT.map" -i"C:/ti/simplelink_cc32xx_sdk_4_10_00_07/source/ti/net/mqtt/lib" -i"C:/ti/simplelink_cc32xx_sdk_4_10_00_07/source/ti/net/lib" -i"C:/ti/simplelink_cc32xx_sdk_4_10_00_07/source/ti/drivers/net/wifi/slnetif" -i"C:/ti/simplelink_cc32xx_sdk_4_10_00_07/source" -i"C:/ti/simplelink_cc32xx_sdk_4_10_00_07/source/ti/drivers/net/wifi" -i"C:/Users/jrsav/workspace_v10/freertos_builds_CC3220SF_LAUNCHXL_release_ccs/Debug" -i"C:/ti/ccs1000/ccs/tools/compiler/ti-cgt-arm_20.2.0.LTS/lib" --diag_suppress=10063 --diag_wrap=off --display_error_number --warn_sections --xml_link_info="Full_Component_MQTT_linkInfo.xml" --rom_model -o "Full_Component_MQTT.out" $(ORDERED_OBJS)
+	"C:/ti/ccs1000/ccs/tools/compiler/ti-cgt-arm_20.2.0.LTS/bin/armcl" -mv7M4 --code_state=16 --float_support=vfplib -me -g --diag_warning=225 --diag_warning=255 --diag_wrap=off --display_error_number --gen_func_subsections=on -z -m"Final_TEAM_Component.map" -i"C:/ti/simplelink_cc32xx_sdk_4_10_00_07/source/ti/net/mqtt/lib" -i"C:/ti/simplelink_cc32xx_sdk_4_10_00_07/source/ti/net/lib" -i"C:/ti/simplelink_cc32xx_sdk_4_10_00_07/source/ti/drivers/net/wifi/slnetif" -i"C:/ti/simplelink_cc32xx_sdk_4_10_00_07/source" -i"C:/ti/simplelink_cc32xx_sdk_4_10_00_07/source/ti/drivers/net/wifi" -i"C:/Users/jrsav/workspace_v10/freertos_builds_CC3220SF_LAUNCHXL_release_ccs/Debug" -i"C:/ti/ccs1000/ccs/tools/compiler/ti-cgt-arm_20.2.0.LTS/lib" --diag_suppress=10063 --diag_wrap=off --display_error_number --warn_sections --xml_link_info="Final_TEAM_Component_linkInfo.xml" --rom_model -o "Final_TEAM_Component.out" $(ORDERED_OBJS)
 	@echo 'Finished building target: "$@"'
 	@echo ' '
 	@$(MAKE) --no-print-directory post-build
 
-Full_Component_MQTT.hex: $(EXE_OUTPUTS)
+Final_TEAM_Component.hex: $(EXE_OUTPUTS)
 	@echo 'Building files: $(strip $(EXE_OUTPUTS__QUOTED))'
 	@echo 'Invoking: ARM Hex Utility'
-	"C:/ti/ccs1000/ccs/tools/compiler/ti-cgt-arm_20.2.0.LTS/bin/armhex"  -o "Full_Component_MQTT.hex" $(EXE_OUTPUTS__QUOTED)
+	"C:/ti/ccs1000/ccs/tools/compiler/ti-cgt-arm_20.2.0.LTS/bin/armhex"  -o "Final_TEAM_Component.hex" $(EXE_OUTPUTS__QUOTED)
 	@echo 'Finished building: $(strip $(EXE_OUTPUTS__QUOTED))'
 	@echo ' '
 	@$(MAKE) --no-print-directory post-build
@@ -189,7 +189,7 @@ clean:
 	-@echo ' '
 
 post-build:
-	-C:/ti/ccs1000/ccs/tools/compiler/ti-cgt-arm_20.2.0.LTS/bin/armobjcopy -O binary --only-section .text --only-section .const --only-section .cinit --only-section .resetVecs Full_Component_MQTT.out Full_Component_MQTT.bin
+	-C:/ti/ccs1000/ccs/tools/compiler/ti-cgt-arm_20.2.0.LTS/bin/armobjcopy -O binary --only-section .text --only-section .const --only-section .cinit --only-section .resetVecs Final_TEAM_Component.out Final_TEAM_Component.bin
 	-@echo ' '
 
 .PHONY: all clean dependents
